@@ -94,13 +94,15 @@ if __name__ == '__main__':
 git clone <repo-url>
 cd DotCertify
 python -m venv venv
-pip install cryptography
 
 # Windows
 ./venv/Scripts/activate
 
 # macOS / Linux
 source venv/bin/activate
+
+# Deps
+pip install cryptography
 
 python ./main.py
 ```
