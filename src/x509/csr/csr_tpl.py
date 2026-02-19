@@ -4,7 +4,7 @@ from typing import Optional
 import uuid
 from pathlib import Path
 
-from src.x509_template import X509Template
+from src.x509.base_tpl import X509Template
 
 
 @dataclass(kw_only=True)

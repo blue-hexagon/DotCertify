@@ -15,14 +15,14 @@ It’s developed as a small playground for learning and testing certificate flow
 
 ## Example Usage
 ```python
-from src.ca.builder import CaBuilder
-from src.ca.ca_tpl import X509CaTemplate
-from src.csr.builder import CsrBuilder
-from src.csr.csr_tpl import X509CsrTemplate
-
-from src.validation.inspector import Inspector
-from src.validation.validator import Validator
-from src.x509_template import X509DN
+from src.x509.inspector import X509Inspector
+from src.x509.validator import X509Validator
+from src.x509.loader import X509Loader
+from src.x509.ca.builder import CaBuilder
+from src.x509.ca.ca_tpl import X509CaTemplate
+from src.x509.csr.builder import CsrBuilder
+from src.x509.csr.csr_tpl import X509CsrTemplate
+from src.x509.base_tpl import X509DN
 
 if __name__ == '__main__':
     # Create CSRs
@@ -70,19 +70,39 @@ if __name__ == '__main__':
             )
         ).sec_secret_from_prompt(static_secret="SuperSecretPassword1234!")
     ).create_key().create_ca()
-    
+
     # Sign the CSRs
     ca.sign_csr(csr_config=csr1)
     ca.sign_csr(csr_config=csr2)
 
     # Inspect a certificate
-    cert = Inspector.load_cert("./client1/endpoint.crt")
-    Inspector.inspect_cert(cert)
+    cert = X509Loader.load_cert("./client1/endpoint.crt")
+    X509Inspector.inspect_cert(cert)
 
     # Inspect a CSR
-    csr = Inspector.load_csr("./client2/endpoint.csr")
-    Inspector.inspect_csr(csr)
+    csr = X509Loader.load_csr("./client2/endpoint.csr")
+    X509Inspector.inspect_csr(csr)
 
+    # Various validation
+    try:
+        key = X509Loader.load_key("./client1/endpoint.key", b"Kode1234!")
+        X509Inspector.inspect_key(key)
+    except ValueError as e:
+        print(f"\n{e}")
+
+    try:
+        X509Validator.validate_endpoint_cert(
+            cert_path="./client1/endpoint.crt",
+            ca_path="./ca/ca.crt",
+            key_path="./client1/endpoint.key",
+            key_password=b"Kode1234!",
+            expected_cn="B8:1E:A4:33:70:40"
+        )
+    except ValueError as e:
+        print(f"\n{e}")
+
+    csr = X509Loader.load_csr("./client2/endpoint.csr")
+    X509Validator.assert_csr_signature_valid(csr)
 ```
 ## Requirements
 

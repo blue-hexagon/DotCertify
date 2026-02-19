@@ -4,8 +4,8 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from datetime import datetime, timedelta, UTC
 
-from src.ca.ca_tpl import X509CaTemplate
-from src.csr.csr_tpl import X509CsrTemplate
+from src.x509.ca.ca_tpl import X509CaTemplate
+from src.x509.csr.csr_tpl import X509CsrTemplate
 
 
 class CaBuilder:
